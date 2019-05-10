@@ -1,8 +1,8 @@
 Bill of Material (Items needed)
-Wemos Mini D1 (V3.0.0)
-Raspberry Pi3 (9.9 Stretch Version)
-Windows 10 (for Arduino configuration)
-Micro-USB to USB Cable
+1 X Wemos Mini D1 (V3.0.0)
+1 X Raspberry Pi3 (9.9 Stretch Version)
+1 X Windows 10 64-bit O/S x64-based Processor (for Arduino configuration)
+1 X Micro-USB to USB Cable
 
 Step1: MQTT Server setup in RaspberryPi3 under root user.
  sudo apt-get update
@@ -14,22 +14,23 @@ Finally perform MQTT testing between Server and Client within RPi3 itself
 Step2: Setting up Wemos in Windows 10
 Connect the Micro USB end to Wemos and USB end to the Windows 10 Machine.
 Ensure that Wemos's in-built Blue LED light flickers when it is powered by the USB cable.
-Do not panic, if Tools > Board Info displays BN: Unkown Board VID: 1A86 PID: 7523 SN: Upload any sketch to obtain it. This should still work.
-Using Device Manager > Ports, verify whether CH340 Driver is visible as Port 4
-Switch off the AntiVirus and Firewall
+Using Device Manager > Ports (COM & LPT), verify whether USB-SERIAL CH340 is displayed as COM5
+Switch off the AntiVirus and Firewall when sketch is verified / uploaded.
 
 Step3: Arduino Configuration
 Install Arduino IDE (ver 1.8.9) from Arduino Web portal https://www.arduino.cc/en/Main/Software.
 Under File/Preferences, in Settings Tab, update 'Additional Boards Manager URL' as http://arduino.esp8266.com/stable/package_esp8266com_index.json
 Under Tools/Board, using Boards Manager, install 'esp8266' to install ESP8266 Board Package.
-Under Tools/Board, select the Board as 'LOLIN(WEMOS) D1 R1 & mini' under ESP8266 Modules (as on 10-May-2019) 
+Under Tools/Board, select the Board as 'LOLIN(WEMOS) D1 R2 & mini' under ESP8266 Boards 2.5.0 (as on 10-May-2019)
+Upload Speed: 115200, CPU Freq: 80 MHz, Flash Size: 4M (1M SPIFFS), Debug Port: Serial, Debug Level: Core, Port: COM5, Programmer: Arduion as ISP
+Do not panic, if Tools > Board Info displays BN: Unkown Board VID: 1A86 PID: 7523 SN: Upload any sketch to obtain it. This should still work.
 
 Step4: Wemos Mini D1 Testing
-Verify Arduino environment is error free by executing example sketch 'Blink'
+Verify Arduino environment is error free by executing example sketch through File > Examples > 01.Basics > Blink
 Upon upload, the inbuilt Blue LED will flicker every 1 second.
 To stop/reset above example Arduino upload the below code:
  void setup() {}
  void loop() {}
  
 Step5: MQTT Client setup in Wemos Mini D1
-Under Tools/Board, using Boards Manager, install 'PubSubClient'
+Under Tools/Library Manager, install 'PubSubClient' ver 2.7.0
