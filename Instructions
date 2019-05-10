@@ -14,6 +14,7 @@ Finally perform MQTT testing between Server and Client within RPi3 itself
 Step2: Arduino Installation
 Connect the Micro USB end to Wemos and USB end to the Windows 10 Machine.
 Ensure the in-built Blue LED light flickers when it is powered by the USB cable.
+Do not panic, if Tools > Board Info displays BN: Unkown Board VID
 Using Device Manager > Ports, verify whether CH340 Driver is visible as Port 4
 Switch off the Antiwirus and Firewall
 Install Arduino IDE (ver 1.8.9) from Arduino Web portal https://www.arduino.cc/en/Main/Software.
