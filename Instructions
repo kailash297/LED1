@@ -1,0 +1,22 @@
+Bill of Material (Items needed)
+Wemos Mini D1 (V3.0.0)
+Raspberry Pi3 (9.9 Stretch Version)
+Windows 10 (for Arduino configuration)
+1 Micro-USB to USB Cable
+
+Step1: Perform the following in RaspberryPi3 under root user.
+ sudo apt-get update
+ sudo apt-get upgrade
+ sudo apt-get install mosquitto -y
+ sudo apt-get install mosquitto-clients y
+Finally perform MQTT testing between Server and Client within RPi3 itself
+
+Step2: 
+Connect the Mirco USB end to Wemos and USB end to the Windows 10 Machine.
+Ensure the in-built Blue LED light flickers when it is powered by the USB cable.
+Using Device Manager > Ports verify whether it is visible as Port 4
+Switch off the Antiwirus and Firewall
+Install Arduino IDE
+Under Preferences update the location as
+As on 10-MAY-2019, select the Board as LOLIN(WEMOS) D1 R1 & mini under ESP8266 Boards 
+Run the sample sketch 'Blink'
