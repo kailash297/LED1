@@ -9,7 +9,8 @@ Step1: MQTT Server setup in RaspberryPi3 under root user.
  sudo apt-get upgrade
  sudo apt-get install mosquitto -y
  sudo apt-get install mosquitto-clients y
-Finally perform MQTT testing between Server and Client within RPi3 itself
+Perform MQTT testing between Server and Client within RPi3 itself.
+Login into your router and perform Address reservation against the RPi3.
 
 Step2: Setting up Wemos in Windows 10
 Connect the Micro USB end to Wemos and USB end to the Windows 10 Machine.
