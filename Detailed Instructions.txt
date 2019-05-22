@@ -85,4 +85,4 @@ Client2: Install 'MyMQTT' app from Google Playstore and under settings, give the
 Plug the Wemos Mini D1 to any power source.
 Voila! Wemos Mini D1 publishes 'Hello World' and using MQTT, the same is subscribed through Rpi3 as well as in Android phone.
 
-Conditions: Rpi3, Wemos and Android phone - All three are connected to same Home Wifi Network.
+Conditions: Rpi3, Wemos and Android phone - All three are connected to same Wi-Fi Network. It can be either Home Wi-Fi or Wi-Fi hotspot from your SmartPhone. Tested in both environments and it works.
