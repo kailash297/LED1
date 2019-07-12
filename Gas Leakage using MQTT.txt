@@ -1,3 +1,7 @@
+###############################################################################################################################
+This tutorial instructions are focused more on how Gas sensor transmits message through MQTT, and is not intended for Commercial or Residential purpose. Adopt Gas safety habits when attempting to test Gas sensor. Safe learning! 
+###############################################################################################################################
+
 Bill of Material (Items needed)
 1 X Wemos Mini D1 (V3.0.0)
 1 X Raspberry Pi3 (9.9 Stretch Version)
