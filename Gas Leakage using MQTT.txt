@@ -1,0 +1,164 @@
+Bill of Material (Items needed)
+1 X Wemos Mini D1 (V3.0.0)
+1 X Raspberry Pi3 (9.9 Stretch Version)
+1 X Windows 10 64-bit O/S x64-based Processor (for Arduino configuration)
+1 X Micro-USB to USB Cable
+1 X MQ2 Gas Sensor
+1 X Cigarette Lighter (for testing LPG leakage) 
+
+Step1: MQTT Server setup in RaspberryPi3 under root user.
+ sudo apt-get update
+ sudo apt-get upgrade
+ sudo apt-get install mosquitto -y
+ sudo apt-get install mosquitto-clients y
+Perform MQTT testing between Server and Client within RPi3 itself.
+Login into your router and perform Address reservation against the RPi3.
+
+Step2: Setting up Wemos in Windows 10
+Connect the Micro USB end to Wemos and USB end to the Windows 10 Machine.
+Ensure that Wemos's in-built Blue LED light flickers when it is powered by the USB cable.
+Using Device Manager > Ports (COM & LPT), verify whether USB-SERIAL CH340 is displayed as COM5
+Switch off the AntiVirus and Firewall when sketch is verified / uploaded.
+
+Step3: Arduino Configuration
+Install Arduino IDE (ver 1.8.9) from Arduino Web portal https://www.arduino.cc/en/Main/Software.
+Under File/Preferences, in Settings Tab, update 'Additional Boards Manager URL' as http://arduino.esp8266.com/stable/package_esp8266com_index.json
+Under Tools/Board, using Boards Manager, install 'esp8266' to install ESP8266 Board Package.
+Under Tools/Board, select the Board as 'LOLIN(WEMOS) D1 R2 & mini' under ESP8266 Boards 2.5.0 (as on 10-May-2019)
+Upload Speed: 115200, CPU Freq: 80 MHz, Flash Size: 4M (1M SPIFFS), Debug Port: Serial, Debug Level: Core, Port: COM5, Programmer: Arduion as ISP
+Do not panic, if Tools > Board Info displays BN: Unkown Board VID: 1A86 PID: 7523 SN: Upload any sketch to obtain it. This should still work.
+
+Step4: Wemos Mini D1 Testing
+Verify Arduino environment is error free by executing example sketch through File > Examples > 01.Basics > Blink
+Upon upload, the inbuilt Blue LED will flicker every 1 second.
+To stop/reset above example Arduino upload the below code:
+ void setup() {}
+ void loop() {}
+
+Step5: The Gas sensor normally should be up by 20 seconds. Sometimes it needs to be preheated over 24 hrs or 48 hrs. Check the datasheet. 
+Using a Mini Breadboard, Connect the MQ2 Sensor Pins with ESP8266 Sensor Pins as following:
+Gas Sensor	ESP8266
+A0		A0
+GND		GND
+VCC		5v5
+D0		NC (Not Connected)
+
+Step6: MQTT Sketch in Wemos
+Under Tools/Library Manager, install 'PubSubClient' ver 2.7.0
+Under File>Examples>PubSubClient, use mqtt_esp8266 sketch for reference.
+Finally, use below sketch to publish the topic 'kitchen/lpg' for every five seconds.
+After updating SSID, Password and mqtt_server details, upload the sketch.
+
+Step7: Raw code for publishing ppm in Wemos Mini D1
+
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+#include <stdio.h> 
+
+// Update these with values suitable for your network.
+
+const char* ssid = "-----";
+const char* password = "------";
+const char* mqtt_server = "192.168.0.100";
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+long lastMsg = 0;
+char msg[50];
+int SensorString = 0;
+
+void setup_wifi() {
+
+  delay(10);
+  // We start by connecting to a WiFi network
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  randomSeed(micros());
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
+
+void reconnect() {
+  // Loop until we're reconnected
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    // Create a random client ID
+    String clientId = "ESP8266Client-";
+    clientId += String(random(0xffff), HEX);
+    // Attempt to connect
+    if (client.connect(clientId.c_str())) {
+      Serial.println("connected");
+      // Once connected, publish an announcement...
+      client.publish("kitchen/lpg", "LPG Sensor using ESP8266 is online now.");
+      // ... and resubscribe
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
+}
+
+void setup() {
+//  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  Serial.begin(9600); // sets the serial port to 9600
+  Serial.println("Gas sensor warming up!");
+  delay(20000); // allow the MQ-2 to warm up
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+}
+
+void loop() {
+
+    if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+  
+  long now = millis();
+  if (now - lastMsg > 5000) {
+    lastMsg = now;
+    
+    float senValue = analogRead(A0);
+    char senString[20];
+    dtostrf(senValue, 7, 2, senString);
+    Serial.print("Sensor Value: ");
+    Serial.println(senString);
+    client.publish("kitchen/lpg", senString);
+   }
+}
+
+Step8: Final Showdown
+Start your Home W-Fi and switch on Rpi3, so that MQTT Server is started.
+Client1: Using Rpi3, subscribe for the topic 'kitchen/lpg'
+Client2: Install 'MyMQTT' app from Google Playstore and under settings, give the MQTT Server ip address and subscribe for the topic 'kitchen/lpg'.
+Plug the assembled board to any power source.
+Now bring a Gas lighter near the Gas Sensor and slowly release the gas.
+The pmm will suddenly surge above 300 ppm till 1024 ppm. Wemos Mini D1 publishes ppm values and using MQTT, the same is subscribed through Rpi3 as well as in Android phone.
+
+Conditions: Rpi3, Wemos+MQ2 and Android phone - All three are connected to same Home Wifi Network.
