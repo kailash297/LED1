@@ -171,7 +171,8 @@ Start your Home W-Fi and switch on Rpi3, so that MQTT Server is started.
 Client1: Using Rpi3, subscribe for the topic 'kitchen/lpg'
 Client2: Install 'MyMQTT' app from Google Playstore and under settings, give the MQTT Server ip address and subscribe for the topic 'kitchen/lpg'.
 Plug the assembled board to any power source.
-Now bring a Gas lighter near the Gas Sensor and slowly release the gas.
-The pmm will suddenly surge above 300 ppm till 1024 ppm. Wemos Mini D1 publishes ppm values and using MQTT, the same is subscribed through Rpi3 as well as in Android phone. Also the value is stored in the Maria Database.
+Now bring a Gas lighter near the Gas Sensor and slowly release the gas, enough not to ignite.
+The pmm will suddenly surge above 300 ppm till 1024 ppm. Wemos Mini D1 publishes ppm values and using MQTT, the same is subscribed through Rpi3 as well as in Android phone. 
+Also this value would be stored in the Maria Database.
 
-Conditions: Rpi3, Wemos+MQ2 and Android phone - All three are connected to same Home Wifi Network.
+Conditions: Rpi3, Wemos+MQ2 and Android phone - All three are connected to same Network (It can be  your Home Wifi or your Smart Phone Mobile hotspot).
