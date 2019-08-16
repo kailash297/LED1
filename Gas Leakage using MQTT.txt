@@ -157,12 +157,21 @@ void loop() {
    }
 }
 
-Step8: Final Showdown
+Step8: Maria DB Installation
+Install MariaDB in Raspberry Pi3 and this will create 'root' user by default.
+Create a new database named 'iot_db'
+Create a new table named 'esp32_wemos' with columns titled dateandtime, sensor and ppm.
+Create a new user named 'db_user' and assign sufficient grants and privileges.
+Create a new flow using node red which will take the input the gas ppm level from ESP8266 and store the value in the table if the ppm value is more than 100. Below is the raw code.
+
+[{"id":"31e7d1c1.12c7ae","type":"function","z":"92532e5c.45cb1","name":"query","func":"var newMsg = {\"topic\": \"INSERT INTO esp32_wemos(dateandtime, sensor, ppm) VALUES (now(), 'Wemos Mini D1', \" + msg.payload + \")\"\n}\nreturn newMsg;\n","outputs":1,"noerr":0,"x":410,"y":180,"wires":[["e6d64d35.02acb"]]},{"id":"e6d64d35.02acb","type":"mysql","z":"92532e5c.45cb1","mydb":"6677f625.8a51b8","name":"Maria","x":550,"y":180,"wires":[["2b0e2e0a.947fa2"]]},{"id":"2b0e2e0a.947fa2","type":"debug","z":"92532e5c.45cb1","name":"","active":true,"tosidebar":true,"console":true,"tostatus":true,"complete":"true","targetType":"full","x":690,"y":180,"wires":[]},{"id":"fcdc9d03.e2a54","type":"mqtt in","z":"92532e5c.45cb1","name":"Gas","topic":"kitchen/lpg","qos":"2","datatype":"auto","broker":"c8a3953a.a672c8","x":90,"y":180,"wires":[["ecf089c1.925488","bfb6f7bd.7cc258"]]},{"id":"ecf089c1.925488","type":"switch","z":"92532e5c.45cb1","name":"ppm","property":"payload","propertyType":"msg","rules":[{"t":"gte","v":"100","vt":"num"}],"checkall":"true","repair":false,"outputs":1,"x":250,"y":180,"wires":[["31e7d1c1.12c7ae","d33c3e5c.88004"]]},{"id":"d33c3e5c.88004","type":"debug","z":"92532e5c.45cb1","name":"","active":true,"tosidebar":true,"console":true,"tostatus":true,"complete":"payload","targetType":"msg","x":420,"y":100,"wires":[]},{"id":"bfb6f7bd.7cc258","type":"debug","z":"92532e5c.45cb1","name":"","active":true,"tosidebar":true,"console":true,"tostatus":true,"complete":"payload","targetType":"msg","x":270,"y":260,"wires":[]},{"id":"989e2534.d0fcb8","type":"comment","z":"92532e5c.45cb1","name":"ESP8266","info":"","x":100,"y":140,"wires":[]},{"id":"700c66c5.60fc28","type":"comment","z":"92532e5c.45cb1","name":"Raspberry Pi3","info":"","x":570,"y":140,"wires":[]},{"id":"6677f625.8a51b8","type":"MySQLdatabase","z":"","host":"127.0.0.1","port":"3306","db":"iot_db","tz":""},{"id":"c8a3953a.a672c8","type":"mqtt-broker","z":"","name":"Mosquitto","broker":"localhost","port":"1883","clientid":"","usetls":false,"compatmode":true,"keepalive":"60","cleansession":true,"birthTopic":"","birthQos":"0","birthPayload":"","closeTopic":"","closeQos":"0","closePayload":"","willTopic":"","willQos":"0","willPayload":""}]
+
+Step9: Final Showdown
 Start your Home W-Fi and switch on Rpi3, so that MQTT Server is started.
 Client1: Using Rpi3, subscribe for the topic 'kitchen/lpg'
 Client2: Install 'MyMQTT' app from Google Playstore and under settings, give the MQTT Server ip address and subscribe for the topic 'kitchen/lpg'.
 Plug the assembled board to any power source.
 Now bring a Gas lighter near the Gas Sensor and slowly release the gas.
-The pmm will suddenly surge above 300 ppm till 1024 ppm. Wemos Mini D1 publishes ppm values and using MQTT, the same is subscribed through Rpi3 as well as in Android phone.
+The pmm will suddenly surge above 300 ppm till 1024 ppm. Wemos Mini D1 publishes ppm values and using MQTT, the same is subscribed through Rpi3 as well as in Android phone. Also the value is stored in the Maria Database.
 
 Conditions: Rpi3, Wemos+MQ2 and Android phone - All three are connected to same Home Wifi Network.
