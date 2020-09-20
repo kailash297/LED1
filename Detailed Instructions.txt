@@ -14,10 +14,10 @@ Step1b: Perform MQTT testing between Server and Client within RPi3 itself.
 Check whether Mosquitto is running and up 
  mosquitto -v
  
- Open two terimnals.
+Open two terimnals.
  In the first terminal, enter mosquitto_sub -d -t MQTT_TestTopic
  In the second terminal, enter mosquitto_pub -d -t MQTT_TtestTopic -m "Hello world!"
- 
+ The first terminal should display the message "Hello world" that has been published. 
 Login into your router and perform Address reservation against the RPi3.
 
 Step2: Setting up Wemos in Windows 10
