@@ -4,12 +4,20 @@ Bill of Material (Items needed)
 1 X Windows 10 64-bit O/S x64-based Processor (for Arduino configuration)
 1 X Micro-USB to USB Cable
 
-Step1: MQTT Server setup in RaspberryPi3 under root user.
+Step1a: MQTT Server setup in RaspberryPi3 under root user.
  sudo apt-get update
  sudo apt-get upgrade
  sudo apt-get install mosquitto -y
  sudo apt-get install mosquitto-clients y
-Perform MQTT testing between Server and Client within RPi3 itself.
+
+Step1b: Perform MQTT testing between Server and Client within RPi3 itself.
+Check whether Mosquitto is running and up 
+ mosquitto -v
+ 
+ Open two terimnals.
+ In the first terminal, enter mosquitto_sub -d -t MQTT_TestTopic
+ In the second terminal, enter mosquitto_pub -d -t MQTT_TtestTopic -m "Hello world!"
+ 
 Login into your router and perform Address reservation against the RPi3.
 
 Step2: Setting up Wemos in Windows 10
